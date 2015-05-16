@@ -1,0 +1,51 @@
+"===[ Settings ]========================================================
+
+" Autocomplete using Firefox Awesomebar subsystem
+set complete=l
+
+" Don't beep
+set noerrorbells
+
+" Make Firefox run faster by using JIT
+set! javascript.options.jit.chrome=true
+
+" don't focus any "input" elements automatically when open pages.
+set focuscontent
+
+"===[ Mappings ]========================================================
+
+" Press 'F10' to toggle Vimperator
+noremap <F10> :vimperatortoggle<CR>
+
+" Press 'n' to change to a buffer, instead of 'b'
+nnoremap B b
+
+" Press 'b' to page up, instead of crazy CTRL-B
+nnoremap b <PageUp>
+
+" Press space to page down
+nnoremap <Space> <PageDown>
+
+" Press 'm' to go to previous tab
+nnoremap m :tabprevious<CR>
+
+" Press ',' to go to next tab
+nnoremap , :tabnext<CR>
+
+" Press backspace to go back
+nnoremap <BS> H
+
+" Press shift-backspace to go forward
+nnoremap <S-BS> L
+
+" Press H to go back, L to go forward.
+nnoremap h H
+nnoremap l L
+nnoremap H h
+nnoremap L l
+" scroll faster
+nnoremap j 2j
+nnoremap k 2k
+" display info of link
+nnoremap \" ;?
+"===[ fin ]=============================================================
