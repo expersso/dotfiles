@@ -33,3 +33,5 @@ setopt hist_ignore_space # remove command line from history list when first char
 
 # add date and time to history
 export HISTTIMEFORMAT='%F %T '
+
+export TERM=xterm-256color

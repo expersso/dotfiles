@@ -120,5 +120,5 @@ fi
 
 stty -ixon
 
-export VISUAL=subl
+export VISUAL=vim
 export EDITOR="$VISUAL"

@@ -1,19 +1,3 @@
-" An example for a vimrc file.
-" 
-" Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last change:	2011 Apr 15
-"
-" To use it, copy it to
-"     for Unix and OS/2:  ~/.vimrc
-"	      for Amiga:  s:.vimrc
-"  for MS-DOS and Win32:  $VIM\_vimrc
-"	    for OpenVMS:  sys$login:.vimrc
-
-" When started as "evim", evim.vim will already have done these settings.
-if v:progname =~? "evim"
-  finish
-endif
-
 " Use Vim settings, rather than Vi settings (much better!).
 " This must be first, because it changes other options as a side effect.
 set nocompatible
@@ -26,29 +10,33 @@ if has("vms")
 else
   set backup		" keep a backup file
 endif
+
 set history=50		" keep 50 lines of command line history
 set ruler		" show the cursor position all the time
 set showcmd		" display incomplete commands
 set incsearch		" do incremental searching
-
-
-" Don't use Ex mode, use Q for formatting
-map Q gq
+set ignorecase      " ignore case in searching
+set smartcase       " search case-sensitive when using any caps
+set number
+set nobackup
+set noswapfile
+set hidden " Allow moving between buffers even when not saved
 
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
 
-" In many terminal emulators the mouse works just fine, thus enable it.
 if has('mouse')
   set mouse=a
 endif
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
+" leader + q to remove search highlights
 if &t_Co > 2 || has("gui_running")
   syntax on
   set hlsearch
+  nmap <leader>q :nohlsearch<CR>
 endif
 
 " Only do this part when compiled with support for autocommands.
@@ -94,63 +82,40 @@ if !exists(":DiffOrig")
 		  \ | wincmd p | diffthis
 endif
 
-set nu
-
-" to be used with python: https://wiki.python.org/moin/Vim
-" set modeline
-" set tabstop=8
-" set expandtab
-" set shiftwidth=4
-" set softtabstop=4
+" Tabs
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set textwidth=79
 set smarttab
-"set expandtab
+set expandtab
 set smartindent
 	
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 
-"This unsets the "last search pattern" register by hitting return
-nnoremap <CR> :noh<CR><CR>
-:let loaded_matchparen = 1
+" Match parentheses
+let loaded_matchparen = 1
 
-" enter and shift-enter to add lines below and above cursor
-"nnoremap <S-CR> O<Esc>j
-"nnoremap <C-CR> o<Esc>k
-
-" control+s to save in all modes
-noremap <silent> <C-S>          :update<CR>
-vnoremap <silent> <C-S>         <C-C>:update<CR>
-inoremap <silent> <C-S>         <C-O>:update<CR>
-
-" ya to yank all
-noremap ya :%y+<CR>
 execute pathogen#infect()
 
-nnoremap <M-PageUp> :tabn<CR> 
-nnoremap <M-PageDown> :tabp<CR> 
 let g:SuperTabDefaultCompletionType = "context"
 let g:jedi#popup_on_dot = 0
-"
-" Execute visually selected chunk of code (it executes so be careful, mainly
-" to check for syntax errors in a chunk of code
-" Usage: Ctrl+h
-python << EOL
-import vim
-def EvaluateCurrentRange():
-    eval(compile('\n'.join(vim.current.range),'','exec'),globals())
-EOL
-map <C-h> :py EvaluateCurrentRange()<cr>
 
 " Enable wildmenu
 set wildmenu
-set wildignore+=*.pyc,*.zip,*.gz,*.bz,*.tar,*.jpg,*.png,*.gif,*.avi,*.wmv,*.ogg,*.mp3,*.mov
+set wildmode=list:longest,full
+set wildignore+=*.pyc,*.zip,*.gz,*.bz,*.tar.*,*.jpg,*.png,*.gif,*.avi,*.wmv,*.ogg,*.mp3,*.mov,*.bz2,*.pdf
 
-" toggle NERDTreeToggle, currently disabled in favor of netrw (e.g. :e.)
-"nnoremap <C-o> :NERDTreeToggle<CR>
-"set runtimepath-=~/.vim/bundle/nerdtree
+" toggle NERDTreeToggle
+nnoremap <c-n> :NERDTreeToggle<CR>
+
+" open NERDTree automaticallt if no file opened
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+" show dotfiles in NERDTree
+let NERDTreeShowHidden=1
 
 " Options for Syntastic
 set statusline+=%#warningmsg#
@@ -160,10 +125,6 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
-
-" Folders for backup files
-set backupdir=./.backup,.,/tmp
-set directory=.,./.backup,/tmp
 
 " setup statusline
 set laststatus=2
@@ -199,12 +160,77 @@ let g:mta_filetypes = {
 " type lorem in insert mode
 inoreabbrev lorem Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
 
-" use matchit (% to jump to matching hmtl tag), Use set filetype=html in other
-" files.
-"source /usr/share/vim/vim73/macros/matchit.vim
+" use matchit (% to jump to matching hmtl tag), Use set filetype=html in other files.
+source /usr/share/vim/vim74/macros/matchit.vim
 
-colorscheme darkblue
+set background=dark
+colorscheme solarized
 
 set showmatch
 
 let g:slime_target = "tmux"
+
+" jedi-vim: set where split opens up
+let g:jedi#popup_select_first = 1
+let g:jedi#use_tabs_not_buffers = 1
+
+" set jedi-vim preview window to bottom
+augroup PreviewOnBottom
+	autocmd InsertEnter * set splitbelow
+	autocmd InsertLeave * set splitbelow!
+augroup END
+
+" change color of pop-up menu
+" highlight   clear
+highlight   Pmenu         ctermfg=0 ctermbg=2
+" highlight   PmenuSel      ctermfg=0 ctermbg=7
+" highlight   PmenuSbar     ctermfg=7 ctermbg=0
+" highlight   PmenuThumb    ctermfg=0 ctermbg=7
+
+" Toggle showing hidden characters
+nmap <leader>l :set list!<CR>
+
+" Toggle showing Syntastic
+nmap <leader>s :SyntasticToggleMode<CR>
+
+" allow moving between windows by ctrl+hjkl, i.e. drop c-w prefix
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+" Map CtrlP to c-p
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_working_path_mode = 'c'
+
+" Set syntax highlighting for markdown files
+autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+
+"Move around Vim command line using normal Emacs key-bindings
+:cnoremap <C-a>  <Home>
+:cnoremap <C-b>  <Left>
+:cnoremap <C-f>  <Right>
+:cnoremap <C-d>  <Delete>
+:cnoremap <M-b>  <S-Left>
+:cnoremap <M-f>  <S-Right>
+:cnoremap <M-d>  <S-right><Delete>
+:cnoremap <Esc>b <S-Left>
+:cnoremap <Esc>f <S-Right>
+:cnoremap <Esc>d <S-right><Delete>
+:cnoremap <C-g>  <C-c>
+
+" add 256 color support
+"if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
+    "set t_Co=256
+"endif
+
+" open splits in correct position
+set splitright
+set splitbelow
+
+" set /g as default in search+replace
+set gdefault
+
+" remove startup message
+set shortmess+=I
