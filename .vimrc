@@ -50,7 +50,7 @@ set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}\  " highlight
 set statusline+=%b,0x%-8B\                   " current char
 set statusline+=%-14.(%l,%c%V%)\ %<%P        " offset
 
-"vertical/horizontal scroll off settings
+" vertical/horizontal scroll off settings
 set scrolloff=3
 set sidescrolloff=7
 set sidescroll=1
@@ -62,7 +62,7 @@ endif
 " Set syntax highlighting for markdown files
 augroup markdown
     au!
-    au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
+    au BufNewFile,BufRead *.md,*.markdown setlocal filetype=markdown
 augroup END
 
 " use matchit (% to jump to matching hmtl tag), Use set filetype=html in other files.
@@ -72,6 +72,18 @@ source /usr/share/vim/vim74/macros/matchit.vim
 highlight   Pmenu   ctermfg=0 ctermbg=2
 
 """""""""" REMAPPINGS """"""""""
+let maplocalleader = "'"
+
+" Use Ctrl+Space to do omnicompletion:
+if has("gui_running")
+    inoremap <C-Space> <C-x><C-o>
+else
+    inoremap <Nul> <C-x><C-o>
+endif
+
+" toggle YouCompleteMe auto-trigger
+nnoremap <leader>y :let g:ycm_auto_trigger=0<CR> " turn off YCM
+nnoremap <leader>Y :let g:ycm_auto_trigger=1<CR> " turn on YCM
 
 " Move around Vim command line using Emacs key-bindings
 :cnoremap <C-a>  <Home>
@@ -91,9 +103,6 @@ map <C-h> <C-w>h
 map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
-
-" Toggle showing hidden characters
-nmap <leader>l :set list!<CR>
 
 " remap Y to be like C and D
 nnoremap Y y$
@@ -160,8 +169,8 @@ if !exists(":DiffOrig")
 endif
 
 """""""""" PLUGINS """"""""""
+" let g:pathogen_disabled = ['YouCompleteMe']
 execute pathogen#infect()
-
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 
 colorscheme gruvbox
@@ -220,13 +229,19 @@ let g:ycm_global_ycm_extra_conf = "~/dotfiles/.ycm_extra_conf.py"
 let g:NERDSpaceDelims = 1
 
 " run :Tabularize with leader+a+character
-if exists(":Tabularize")
-    nmap <Leader>a= :Tabularize /=<CR>
-    vmap <Leader>a= :Tabularize /=<CR>
-    nmap <Leader>a: :Tabularize /:\zs<CR>
-    vmap <Leader>a: :Tabularize /:\zs<CR>
-    nmap <Leader>a{ :Tabularize /{<CR>
-    vmap <Leader>a{ :Tabularize /{<CR>
-    nmap <Leader>a" :Tabularize /"<CR>
-    vmap <Leader>a" :Tabularize /"<CR>
-endif
+nmap <Leader>a= :Tabularize /=<CR>
+vmap <Leader>a= :Tabularize /=<CR>
+nmap <Leader>a: :Tabularize /:\zs<CR>
+let vimrplugin_show_args = 1
+let vimrplugin_args_in_stline = 1
+let vimrplugin_vimcom_wait = 1000
+vmap <Leader>a: :Tabularize /:\zs<CR>
+nmap <Leader>a{ :Tabularize /{<CR>
+vmap <Leader>a{ :Tabularize /{<CR>
+nmap <Leader>a" :Tabularize /"<CR>
+vmap <Leader>a" :Tabularize /"<CR>
+
+" show function args in R
+let vimrplugin_show_args = 1
+let vimrplugin_args_in_stline = 1
+let vimrplugin_vimcom_wait = 1000
